@@ -15,6 +15,7 @@
 
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -33,6 +34,7 @@ namespace Portal
             {
                 // Have the null state so that more error handling could be implemented here
                 // I'm too lazy and just want this to work for now, so no error handling for you >:)
+                System.Diagnostics.Debug.WriteLine("An error occured. Please see prior console messages.");
                 newUrls = new List<string>();
             }
 
@@ -41,7 +43,12 @@ namespace Portal
                 Result = CommandResult.KeepOpen()
             };
 
-            return new DynamicListItem(command);
+            var item = new DynamicListItem(command)
+            {
+                Title = "Load URLs"
+            };
+
+            return item;
         }
     }
 }

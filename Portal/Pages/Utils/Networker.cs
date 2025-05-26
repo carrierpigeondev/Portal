@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -29,8 +30,12 @@ namespace Portal
             List<string> urls = new List<string>();
 
             string? fetchUrl = Environment.GetEnvironmentVariable("PORTAL_FETCH_URL");
+            System.Diagnostics.Debug.WriteLine($"PORTAL_FETCH_URL: {fetchUrl}");
             if (fetchUrl == null)
+            {
+                System.Diagnostics.Debug.WriteLine("PORTAL_FETCH_URL environment variable is not set.");
                 return null;
+            }
 
             try
             {
@@ -40,6 +45,7 @@ namespace Portal
             }
             catch (HttpRequestException e)
             {
+                System.Diagnostics.Debug.WriteLine($"Error fetching URLs: {e.Message}");
                 return null;
             }
 
