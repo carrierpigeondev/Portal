@@ -1,6 +1,16 @@
-# Portal
+# Welcome to Portal!
+![image](https://github.com/user-attachments/assets/52885f22-8399-469c-8c2b-ea90eeebc1f6)
+
+
+
+
+## What is Portal?
+Portal is an extension for the [Command Palette](https://learn.microsoft.com/en-us/windows/powertoys/command-palette/overview) of [Microsoft PowerToys](https://learn.microsoft.com/en-us/windows/powertoys/) that enables URLs to be easily opened from the Command Palette with user-defined entries.
 
 ## Setup
+### Install through WinGet
+> [!NOTE]
+> A WinGet package is in the works...
 
 ### Fetching URLS
 1. Create an accessible web page which has all URLs you wish to make visible to Portal formatted as a fully-qualified domain name similarly to the following example:
