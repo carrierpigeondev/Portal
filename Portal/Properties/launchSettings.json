@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Portal (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "Portal (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
