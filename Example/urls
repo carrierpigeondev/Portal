@@ -1,4 +1,4 @@
-https://example.com
-github.com
-www.domain.me/what-are-subdomains/
-127.0.0.1:80
+https://www.example.com
+https://www.github.com
+https://www.domain.me/what-are-subdomains/
+http://127.0.0.1:80
