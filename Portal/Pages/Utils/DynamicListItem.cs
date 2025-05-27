@@ -29,16 +29,16 @@ namespace Portal
 
         public static async Task<DynamicListItem> CreateAsync(PortalPage page)
         {
-            List<string>? newUrls = await Networker.FetchUrls();
-            if (newUrls == null)
+            List<Dictionary<string, string>>? newUrlDictList = await Networker.FetchUrls();
+            if (newUrlDictList == null)
             {
                 // Have the null state so that more error handling could be implemented here
                 // I'm too lazy and just want this to work for now, so no error handling for you >:)
                 System.Diagnostics.Debug.WriteLine("An error occured. Please see prior console messages.");
-                newUrls = new List<string>();
+                newUrlDictList = [];
             }
 
-            var command = new AnonymousCommand(action: () => page.UpdateUrls(newUrls))
+            var command = new AnonymousCommand(action: () => page.UpdateUrls(newUrlDictList))
             {
                 Result = CommandResult.KeepOpen()
             };

@@ -18,16 +18,23 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Portal
 {
+    [JsonSerializable(typeof(Dictionary<string, Dictionary<string, string>>))]
+    public partial class UrlJsonContext : JsonSerializerContext { }
+
     internal class Networker
     {
-        internal static readonly string[] separator = new[] { "\r\n", "\n" };
+        internal static readonly string[] separator = ["\r\n", "\n"];
 
-        public static async Task<List<string>?> FetchUrls()
+        public static async Task<List<Dictionary<string, string>>?> FetchUrls()
         {
-            List<string> urls = new List<string>();
+            System.Diagnostics.Debug.WriteLine("Fetch called.");
+
+            List<Dictionary<string, string>> urlDictList = [];
 
             string? fetchUrl = Environment.GetEnvironmentVariable("PORTAL_FETCH_URL");
             System.Diagnostics.Debug.WriteLine($"PORTAL_FETCH_URL: {fetchUrl}");
@@ -39,9 +46,17 @@ namespace Portal
 
             try
             {
-                using HttpClient client = new HttpClient();
+                using HttpClient client = new();
                 string content = await client.GetStringAsync(fetchUrl);
-                urls = [.. content.Split(separator, StringSplitOptions.None)];
+                if (content.StartsWith('{'))
+                {
+                    urlDictList = ParseContentAsJSON(content);
+                }
+                else
+                {
+                    urlDictList = ParseContentAsPlaintext(content);
+                }
+
             }
             catch (HttpRequestException e)
             {
@@ -49,7 +64,46 @@ namespace Portal
                 return null;
             }
 
-            return urls;
+            return urlDictList;
+        }
+
+        private static List<Dictionary<string, string>> ParseContentAsJSON(string content)
+        {
+            List<Dictionary<string, string>> _urlDictList = [];
+
+            var deserializedContent = JsonSerializer.Deserialize(content, UrlJsonContext.Default.DictionaryStringDictionaryStringString);
+            if (deserializedContent != null)
+            {
+                foreach (var entry in deserializedContent)
+                {
+                    Dictionary<string, string> urlEntry = new() { { "alias", entry.Key } };
+
+                    foreach (var urlKVP in entry.Value)
+                    {
+                        urlEntry[urlKVP.Key] = urlKVP.Value.Trim();
+                    }
+
+                    _urlDictList.Add(urlEntry);
+                }
+            }
+
+            return _urlDictList;
+        }
+
+        private static List<Dictionary<string, string>> ParseContentAsPlaintext(string content)
+        {
+            List<Dictionary<string, string>> _urlDictList = [];
+            string[] lines = content.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            foreach (var line in lines) {
+                Dictionary<string, string> urlEntry = new()
+                {
+                    { "alias", line },
+                    { "url", line }
+                };
+
+                _urlDictList.Add(urlEntry);
+            }
+            return _urlDictList;
         }
     }
 }

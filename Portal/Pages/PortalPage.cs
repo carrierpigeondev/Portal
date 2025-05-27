@@ -28,7 +28,7 @@ namespace Portal;
 
 internal sealed partial class PortalPage : ListPage
 {
-    private List<string> _urls = new();
+    private List<Dictionary<string, string>> _urlDictList = [];
     private DynamicListItem? _dynamicItem;
 
     public PortalPage()
@@ -57,14 +57,14 @@ internal sealed partial class PortalPage : ListPage
 
     public override IListItem[] GetItems()
     {
-        IEnumerable<IListItem> items = _urls
-        .Select(url => new ListItem(new OpenUrlCommand(url))
-        {
-            Title = $"Open to {url}"
-        })
-        .Cast<IListItem>();
+        IEnumerable<IListItem> items = _urlDictList
+            .Select(entry => { return new ListItem(new OpenUrlCommand(entry["url"]))
+                {
+                    Title = entry["alias"]
+                };
+            })
+            .Cast<IListItem>();
 
-        // If _dynamicItem has not yet been created, show a placeholder
         if (_dynamicItem != null)
         {
             items = items.Append(_dynamicItem);
@@ -80,9 +80,9 @@ internal sealed partial class PortalPage : ListPage
         return items.ToArray();
     }
 
-    internal void UpdateUrls(List<string> newUrls)
+    internal void UpdateUrls(List<Dictionary<string, string>> newUrlDictList)
     {
-        _urls = newUrls;
+        _urlDictList = newUrlDictList;
         RaiseItemsChanged();
     }
 }

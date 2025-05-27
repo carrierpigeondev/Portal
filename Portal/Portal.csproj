@@ -12,6 +12,8 @@
 
 	<PublishProfile>win-$(Platform).pubxml</PublishProfile>
 	<EnableMsixTooling>true</EnableMsixTooling>
+
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
