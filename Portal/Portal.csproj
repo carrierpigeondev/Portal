@@ -74,14 +74,15 @@
     <PublishTrimmed>true</PublishTrimmed>
 	<WindowsPackageType>MSIX</WindowsPackageType>
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
-    <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <AppInstallerUri>https://github.com/carrierpigeondev/Portal/releases</AppInstallerUri>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+    <PackageCertificateThumbprint>3BEB2A3CEDF02BF29802FE2A425D72C8A58CC9CE</PackageCertificateThumbprint>
   </PropertyGroup>
 </Project>

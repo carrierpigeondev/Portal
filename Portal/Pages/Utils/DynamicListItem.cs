@@ -15,9 +15,6 @@
 
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Portal
 {
@@ -29,24 +26,35 @@ namespace Portal
 
         public static async Task<DynamicListItem> CreateAsync(PortalPage page)
         {
-            List<Dictionary<string, string>>? newUrlDictList = await Networker.FetchUrls();
-            if (newUrlDictList == null)
+            InvokableCommand command;
+            DynamicListItem item;
+
+            List<Dictionary<string, string>> newUrlDictList = [];
+
+            try
             {
-                // Have the null state so that more error handling could be implemented here
-                // I'm too lazy and just want this to work for now, so no error handling for you >:)
-                System.Diagnostics.Debug.WriteLine("An error occured. Please see prior console messages.");
-                newUrlDictList = [];
+                newUrlDictList = await Networker.FetchUrls();
+                command = new AnonymousCommand(action: () => page.UpdateUrls(newUrlDictList))
+                {
+                    Result = CommandResult.KeepOpen()
+                };
+
+                item = new DynamicListItem(command)
+                {
+                    Title = "Load URLs"
+                };
             }
-
-            var command = new AnonymousCommand(action: () => page.UpdateUrls(newUrlDictList))
+            catch (Exception e)
             {
-                Result = CommandResult.KeepOpen()
-            };
+                System.Diagnostics.Debug.WriteLine($"An error occured. All details of the exception message: {e.Message}.\nThe following is the stack trace: {e.StackTrace}.");
+                newUrlDictList = [];
 
-            var item = new DynamicListItem(command)
-            {
-                Title = "Load URLs"
-            };
+                command = new ShowMessageCommand("An error occured.", $"All details of the exception message: {e.Message}.\nThe following is the stack trace: {e.StackTrace}.");
+                item = new DynamicListItem(command)
+                {
+                    Title = "An Error Occured (Click me to see error)..."
+                };
+            }
 
             return item;
         }

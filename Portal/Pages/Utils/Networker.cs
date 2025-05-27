@@ -13,11 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -26,11 +21,14 @@ namespace Portal
     [JsonSerializable(typeof(Dictionary<string, Dictionary<string, string>>))]
     public partial class UrlJsonContext : JsonSerializerContext { }
 
+    [Serializable]
+    internal class PortalFetchURLEnvNotSetException : Exception { public PortalFetchURLEnvNotSetException(string message) : base(message) { } }
+
     internal class Networker
     {
         internal static readonly string[] separator = ["\r\n", "\n"];
 
-        public static async Task<List<Dictionary<string, string>>?> FetchUrls()
+        public static async Task<List<Dictionary<string, string>>> FetchUrls()
         {
             System.Diagnostics.Debug.WriteLine("Fetch called.");
 
@@ -41,27 +39,22 @@ namespace Portal
             if (fetchUrl == null)
             {
                 System.Diagnostics.Debug.WriteLine("PORTAL_FETCH_URL environment variable is not set.");
-                return null;
+                throw new PortalFetchURLEnvNotSetException("PORTAL_FETCH_URL environment variable is not set.");
             }
 
-            try
-            {
-                using HttpClient client = new();
-                string content = await client.GetStringAsync(fetchUrl);
-                if (content.StartsWith('{'))
-                {
-                    urlDictList = ParseContentAsJSON(content);
-                }
-                else
-                {
-                    urlDictList = ParseContentAsPlaintext(content);
-                }
+            using HttpClient client = new();
 
+            // May throw a HttpRequestException if the URL is invalid or unreachable.
+            // This is to be handled outside of the function.
+            string content = await client.GetStringAsync(fetchUrl);
+
+            if (content.StartsWith('{'))
+            { 
+                urlDictList = ParseContentAsJSON(content);
             }
-            catch (HttpRequestException e)
-            {
-                System.Diagnostics.Debug.WriteLine($"Error fetching URLs: {e.Message}");
-                return null;
+            else
+            { 
+                urlDictList = ParseContentAsPlaintext(content);
             }
 
             return urlDictList;

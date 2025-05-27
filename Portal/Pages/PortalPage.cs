@@ -19,10 +19,6 @@
 
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Portal;
 
@@ -58,7 +54,7 @@ internal sealed partial class PortalPage : ListPage
     public override IListItem[] GetItems()
     {
         IEnumerable<IListItem> items = _urlDictList
-            .Select(entry => { return new ListItem(new OpenUrlCommand(entry["url"]))
+            .Select(entry => { return new ListItem(new PortalOpenURLCommand(entry["url"]))
                 {
                     Title = entry["alias"]
                 };
@@ -73,7 +69,7 @@ internal sealed partial class PortalPage : ListPage
         {
             items = items.Append(new ListItem(new NoOpCommand())
             {
-                Title = "Loading..."
+                Title = "Loading...",
             });
         }
 
