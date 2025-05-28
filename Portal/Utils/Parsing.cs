@@ -14,50 +14,25 @@
 // limitations under the License.
 
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Portal
 {
-    [JsonSerializable(typeof(Dictionary<string, Dictionary<string, string>>))]
-    public partial class UrlJsonContext : JsonSerializerContext { }
-
-    [Serializable]
-    internal class PortalFetchURLEnvNotSetException : Exception { public PortalFetchURLEnvNotSetException(string message) : base(message) { } }
-
-    internal class Networker
+    internal class Parsing
     {
         internal static readonly string[] separator = ["\r\n", "\n"];
 
-        public static async Task<List<Dictionary<string, string>>> FetchUrls()
+        public static List<Dictionary<string, string>> ParseToURLList(string content)
         {
-            System.Diagnostics.Debug.WriteLine("Fetch called.");
-
-            List<Dictionary<string, string>> urlDictList = [];
-
-            string? fetchUrl = Environment.GetEnvironmentVariable("PORTAL_FETCH_URL");
-            System.Diagnostics.Debug.WriteLine($"PORTAL_FETCH_URL: {fetchUrl}");
-            if (fetchUrl == null)
-            {
-                System.Diagnostics.Debug.WriteLine("PORTAL_FETCH_URL environment variable is not set.");
-                throw new PortalFetchURLEnvNotSetException("PORTAL_FETCH_URL environment variable is not set.");
-            }
-
-            using HttpClient client = new();
-
-            // May throw a HttpRequestException if the URL is invalid or unreachable.
-            // This is to be handled outside of the function.
-            string content = await client.GetStringAsync(fetchUrl);
-
+            List<Dictionary<string, string>> _urlDictList = [];
             if (content.StartsWith('{'))
-            { 
-                urlDictList = ParseContentAsJSON(content);
+            {
+                _urlDictList = ParseContentAsJSON(content);
             }
             else
-            { 
-                urlDictList = ParseContentAsPlaintext(content);
+            {
+                _urlDictList = ParseContentAsPlaintext(content);
             }
-
-            return urlDictList;
+            return _urlDictList;
         }
 
         private static List<Dictionary<string, string>> ParseContentAsJSON(string content)
@@ -87,7 +62,8 @@ namespace Portal
         {
             List<Dictionary<string, string>> _urlDictList = [];
             string[] lines = content.Split(separator, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            foreach (var line in lines) {
+            foreach (var line in lines)
+            {
                 Dictionary<string, string> urlEntry = new()
                 {
                     { "alias", line },

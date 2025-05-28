@@ -83,6 +83,6 @@
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <AppInstallerUri>https://github.com/carrierpigeondev/Portal/releases</AppInstallerUri>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
-    <PackageCertificateThumbprint>3BEB2A3CEDF02BF29802FE2A425D72C8A58CC9CE</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>81B6FD313944B595807E2C3DA7DB0C174C5E7B5D</PackageCertificateThumbprint>
   </PropertyGroup>
 </Project>

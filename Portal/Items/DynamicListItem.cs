@@ -33,7 +33,7 @@ namespace Portal
 
             try
             {
-                newUrlDictList = await Networker.FetchUrls();
+                newUrlDictList = await Networking.FetchUrls();
                 command = new AnonymousCommand(action: () => page.UpdateUrls(newUrlDictList))
                 {
                     Result = CommandResult.KeepOpen()
