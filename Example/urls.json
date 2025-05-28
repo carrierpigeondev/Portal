@@ -1,0 +1,14 @@
+{
+    "Example Website": {
+        "url": "https://www.example.com"
+    },
+    "GitHub": {
+        "url": "https://www.github.com"
+    },
+    "Subdomain Info": {
+        "url": "https://www.domain.me/what-are-subdomains/"
+    },
+    "Localhost Website": {
+        "url": "http://127.0.0.1:80"
+    }
+}
