@@ -15,7 +15,7 @@
 
 namespace Portal
 {
-    internal class FileHelper
+    internal class FileHelping
     {
         private static readonly string _lastURLsFile = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "last_urls");
         public static string ReadLastURLS() 
@@ -24,5 +24,12 @@ namespace Portal
             return File.ReadAllText(_lastURLsFile);
         }
         public static void WriteLastURLS(string content) => File.WriteAllText(_lastURLsFile, content);
+
+        public static List<Dictionary<string, string>> FetchURLsLocal(string fetchURI)
+        {
+            System.Diagnostics.Debug.WriteLine("Local fetch called.");
+            string content = File.ReadAllText(fetchURI);
+            return Parsing.ParseToURLList(content);
+        }
     }
 }

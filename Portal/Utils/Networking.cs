@@ -27,31 +27,23 @@ namespace Portal
 
     internal class Networking
     {
-        public static async Task<List<Dictionary<string, string>>> FetchUrls()
+        public static async Task<List<Dictionary<string, string>>> FetchURLsRemote(string fetchURI)
         {
-            System.Diagnostics.Debug.WriteLine("Fetch called.");
-
-            string? fetchUrl = Environment.GetEnvironmentVariable("PORTAL_FETCH_URL");
-            System.Diagnostics.Debug.WriteLine($"PORTAL_FETCH_URL: {fetchUrl}");
-            if (fetchUrl == null)
-            {
-                System.Diagnostics.Debug.WriteLine("PORTAL_FETCH_URL environment variable is not set.");
-                throw new PortalFetchURLEnvNotSetException("PORTAL_FETCH_URL environment variable is not set.");
-            }
+            System.Diagnostics.Debug.WriteLine("Networked fetch called.");
 
             using HttpClient client = new();
 
             string content = "";
             try
             {
-                content = await client.GetStringAsync(fetchUrl);
-                File.WriteAllText(Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "last_urls"), content);
+                content = await client.GetStringAsync(fetchURI);
+                FileHelping.WriteLastURLS(content);
             }
             catch (HttpRequestException e)
             {
                 System.Diagnostics.Debug.WriteLine($"An error occurred while fetching URLs: {e.Message}");
                 System.Diagnostics.Debug.WriteLine($"Attempting to fall back to last local URLs.");
-                content = File.ReadAllText(Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "last_urls"));
+                content = FileHelping.ReadLastURLS();
             }
 
 
